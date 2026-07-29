@@ -23,7 +23,7 @@ const badges = [
 ];
 
 const codeSnippet = `const developer = {
-  name: "Amazing Human",
+  name: "Arthur Paradizi",
   role: "Full-Stack E-Commerce Dev",
   experience: "8+ years",
   focus: [

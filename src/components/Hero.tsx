@@ -554,7 +554,7 @@ export default function Hero() {
     delay: Math.random() * 8,
   }));
 
-  const nameText = "Amazing Human";
+  const nameText = "Arthur Paradizi";
 
   return (
     <section

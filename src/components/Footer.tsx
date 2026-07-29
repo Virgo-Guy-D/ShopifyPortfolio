@@ -30,7 +30,7 @@ export default function Footer() {
             >
               <ShoppingBag className="w-5 h-5 text-white" />
             </motion.div>
-            <span className="text-white">Amazing Human<span className="text-cyan-300">.</span></span>
+            <span className="text-white">Arthur Paradizi<span className="text-cyan-300">.</span></span>
           </motion.a>
 
           {/* Nav Links */}
@@ -52,7 +52,7 @@ export default function Footer() {
 
           {/* Copyright */}
           <div className="text-sm text-gray-500">
-            © {currentYear} Amazing Human. All rights reserved.
+            © {currentYear} Arthur Paradizi. All rights reserved.
           </div>
         </div>
 
