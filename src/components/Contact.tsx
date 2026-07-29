@@ -3,9 +3,9 @@ import { useRef, useState } from 'react';
 import { Mail, Phone, MapPin, Send, Github, Linkedin, Twitter, CheckCircle, Loader2, Sparkles } from 'lucide-react';
 
 const contactInfo = [
-  { icon: Mail, label: 'Email', value: 'Amazing@devshop.io', href: 'mailto:Amazing@devshop.io' },
-  { icon: Phone, label: 'Phone', value: '+1 (415) 555-0123', href: 'tel:+14155550123' },
-  { icon: MapPin, label: 'Location', value: 'Tokyo, Japan', href: '#' },
+  { icon: Mail, label: 'Email', value: 'aurtherparadizi@gmail.com', href: 'mailto:aurtherparadizi@gmail.com' },
+  { icon: Phone, label: 'Phone', value: '+55 31 9 8699-2900', href: 'tel:+5531986992900' },
+  { icon: MapPin, label: 'Location', value: 'Belo Horizonte, MG, Brazil', href: '#' },
 ];
 
 const socialLinks = [

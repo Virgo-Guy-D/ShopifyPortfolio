@@ -62,7 +62,7 @@ export default function Navbar() {
               >
                 <ShoppingBag className="w-5 h-5 text-white" />
               </motion.div>
-              <span className="text-white">Amazing<span className="text-cyan-300">.</span></span>
+              <span className="text-white">Arthur P<span className="text-cyan-300">.</span></span>
             </motion.a>
 
             <div className="hidden md:flex items-center gap-1">

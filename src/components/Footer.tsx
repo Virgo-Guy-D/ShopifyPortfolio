@@ -30,7 +30,7 @@ export default function Footer() {
             >
               <ShoppingBag className="w-5 h-5 text-white" />
             </motion.div>
-            <span className="text-white">Arthur Paradizi<span className="text-cyan-300">.</span></span>
+            <span className="text-white">Arthur P.<span className="text-cyan-300">.</span></span>
           </motion.a>
 
           {/* Nav Links */}
