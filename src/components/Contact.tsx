@@ -1,9 +1,10 @@
 import { motion, useInView } from 'framer-motion';
 import { useRef, useState } from 'react';
 import { Mail, Phone, MapPin, Send, Github, Linkedin, Twitter, CheckCircle, Loader2, Sparkles } from 'lucide-react';
+import SectionBackground from './SectionBackground';
 
 const contactInfo = [
-  { icon: Mail, label: 'Email', value: 'aurtherparadizi@gmail.com', href: 'mailto:aurtherparadizi@gmail.com' },
+  { icon: Mail, label: 'Email', value: 'brilliantshopifydev@gmail.com', href: 'mailto:aurtherparadizi@gmail.com' },
   { icon: Phone, label: 'Phone', value: '+55 31 9 8699-2900', href: 'tel:+5531986992900' },
   { icon: MapPin, label: 'Location', value: 'Belo Horizonte, MG, Brazil', href: '#' },
 ];
@@ -32,28 +33,10 @@ export default function Contact() {
   };
 
   return (
-    <section id="contact" className="py-20 md:py-32 bg-[#0a0a12] relative overflow-hidden">
-      {/* Background */}
-      <div className="absolute inset-0">
-        <div 
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `
-              linear-gradient(rgba(34, 211, 238, 0.03) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(34, 211, 238, 0.03) 1px, transparent 1px)
-            `,
-            backgroundSize: '60px 60px',
-          }}
-        />
-        <motion.div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px]"
-          style={{ background: 'radial-gradient(circle, rgba(34, 211, 238, 0.08) 0%, transparent 70%)', filter: 'blur(80px)' }}
-          animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.6, 0.3] }}
-          transition={{ duration: 10, repeat: Infinity }}
-        />
-      </div>
+    <section id="contact" className="pt-20 md:pt-32 pb-12 md:pb-16 relative overflow-hidden">
+      <SectionBackground tint="cyan" />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header */}
         <motion.div
           ref={ref}

@@ -1,6 +1,7 @@
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { useEffect, useState, useRef } from 'react';
-import { MapPin, ShoppingCart, Package, CreditCard, Truck, Store, BarChart3, Tag, Sparkles, Star } from 'lucide-react';
+import { MapPin, ShoppingCart, Package, CreditCard, Truck, Store, BarChart3, Tag, Sparkles } from 'lucide-react';
+import SectionBackground from './SectionBackground';
 
 const techStack = [
   { name: 'Shopify', icon: '🛒' },
@@ -28,47 +29,6 @@ const roles = [
   'Conversion Optimization Specialist',
   'Custom Theme Developer',
 ];
-
-// Animated star component
-const AnimatedStar = ({ delay, x, y, size }: { delay: number; x: number; y: number; size: number }) => (
-  <motion.div
-    className="absolute"
-    style={{ left: `${x}%`, top: `${y}%` }}
-    initial={{ opacity: 0, scale: 0, rotate: 0 }}
-    animate={{ 
-      opacity: [0, 1, 1, 0],
-      scale: [0, 1, 1, 0],
-      rotate: [0, 180, 360],
-    }}
-    transition={{
-      duration: 4,
-      delay,
-      repeat: Infinity,
-      ease: 'easeInOut',
-    }}
-  >
-    <Star className="text-cyan-300 fill-cyan-300" style={{ width: size, height: size }} />
-  </motion.div>
-);
-
-// Floating particle
-const Particle = ({ delay, x }: { delay: number; x: number }) => (
-  <motion.div
-    className="absolute w-1 h-1 rounded-full bg-gradient-to-r from-cyan-300 to-purple-400"
-    style={{ left: `${x}%`, bottom: 0 }}
-    animate={{
-      y: [0, -800],
-      opacity: [0, 1, 1, 0],
-      scale: [0, 1.5, 1, 0],
-    }}
-    transition={{
-      duration: 8 + Math.random() * 4,
-      delay,
-      repeat: Infinity,
-      ease: 'linear',
-    }}
-  />
-);
 
 // Sparkle burst effect on click
 const SparkleEffect = ({ x, y }: { x: number; y: number }) => {
@@ -542,18 +502,6 @@ export default function Hero() {
     return () => clearTimeout(timeout);
   }, [displayedText, isDeleting, currentRoleIndex]);
 
-  const stars = Array.from({ length: 25 }, () => ({
-    x: Math.random() * 100,
-    y: Math.random() * 100,
-    delay: Math.random() * 5,
-    size: 8 + Math.random() * 12,
-  }));
-
-  const particles = Array.from({ length: 40 }, () => ({
-    x: Math.random() * 100,
-    delay: Math.random() * 8,
-  }));
-
   const nameText = "Arthur Paradizi";
 
   return (
@@ -567,95 +515,7 @@ export default function Hero() {
         <SparkleEffect key={effect.id} x={effect.x} y={effect.y} />
       ))}
 
-      {/* Dark background */}
-      <div className="absolute inset-0 bg-[#050508]" />
-      
-      {/* Animated mesh gradient */}
-      <motion.div 
-        className="absolute inset-0"
-        animate={{
-          background: [
-            'radial-gradient(circle at 20% 20%, rgba(34, 211, 238, 0.2) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(167, 139, 250, 0.2) 0%, transparent 50%)',
-            'radial-gradient(circle at 80% 20%, rgba(34, 211, 238, 0.2) 0%, transparent 50%), radial-gradient(circle at 20% 80%, rgba(167, 139, 250, 0.2) 0%, transparent 50%)',
-            'radial-gradient(circle at 50% 50%, rgba(34, 211, 238, 0.2) 0%, transparent 50%), radial-gradient(circle at 50% 50%, rgba(244, 114, 182, 0.15) 0%, transparent 50%)',
-            'radial-gradient(circle at 20% 20%, rgba(34, 211, 238, 0.2) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(167, 139, 250, 0.2) 0%, transparent 50%)',
-          ],
-        }}
-        transition={{ duration: 10, repeat: Infinity, ease: 'linear' }}
-      />
-
-      {/* Grid pattern */}
-      <div 
-        className="absolute inset-0"
-        style={{
-          backgroundImage: `
-            linear-gradient(rgba(34, 211, 238, 0.12) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(34, 211, 238, 0.12) 1px, transparent 1px)
-          `,
-          backgroundSize: '60px 60px',
-        }}
-      />
-
-      {/* Animated glow orbs */}
-      <motion.div
-        className="absolute w-[600px] h-[600px] rounded-full"
-        style={{
-          background: 'radial-gradient(circle, rgba(34, 211, 238, 0.3) 0%, transparent 70%)',
-          left: '10%',
-          top: '10%',
-          filter: 'blur(40px)',
-        }}
-        animate={{
-          scale: [1, 1.3, 1],
-          x: [0, 100, 0],
-          y: [0, 50, 0],
-        }}
-        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-      />
-      <motion.div
-        className="absolute w-[500px] h-[500px] rounded-full"
-        style={{
-          background: 'radial-gradient(circle, rgba(167, 139, 250, 0.25) 0%, transparent 70%)',
-          right: '10%',
-          bottom: '10%',
-          filter: 'blur(40px)',
-        }}
-        animate={{
-          scale: [1, 1.2, 1],
-          x: [0, -80, 0],
-          y: [0, -60, 0],
-        }}
-        transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
-      />
-      <motion.div
-        className="absolute w-[400px] h-[400px] rounded-full"
-        style={{
-          background: 'radial-gradient(circle, rgba(244, 114, 182, 0.2) 0%, transparent 70%)',
-          left: '50%',
-          top: '30%',
-          transform: 'translateX(-50%)',
-          filter: 'blur(60px)',
-        }}
-        animate={{
-          scale: [1, 1.4, 1],
-          opacity: [0.5, 1, 0.5],
-        }}
-        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
-      />
-
-      {/* Animated stars */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {stars.map((star, i) => (
-          <AnimatedStar key={i} {...star} />
-        ))}
-      </div>
-
-      {/* Rising particles */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {particles.map((particle, i) => (
-          <Particle key={i} {...particle} />
-        ))}
-      </div>
+      <SectionBackground tint="cyan" starCount={25} particleCount={40} />
 
       {/* Floating e-commerce icons */}
       {floatingIcons.map(({ Icon, x, y, size, delay }, index) => (

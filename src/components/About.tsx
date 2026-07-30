@@ -1,6 +1,7 @@
 import { motion, useInView } from 'framer-motion';
 import { useRef, useState } from 'react';
-import { TrendingUp, Code2, Users, Zap, Award, Clock, CheckCircle, Handshake, Sparkles, Star } from 'lucide-react';
+import { TrendingUp, Code2, Users, Zap, Award, Clock, CheckCircle, Handshake, Sparkles } from 'lucide-react';
+import SectionBackground from './SectionBackground';
 
 const stats = [
   { value: '8+', label: 'Years Experience', icon: '🚀' },
@@ -34,47 +35,6 @@ const codeSnippet = `const developer = {
   ],
   passion: "Building stores that sell"
 };`;
-
-// Animated star component
-const AnimatedStar = ({ delay, x, y, size }: { delay: number; x: number; y: number; size: number }) => (
-  <motion.div
-    className="absolute"
-    style={{ left: `${x}%`, top: `${y}%` }}
-    initial={{ opacity: 0, scale: 0, rotate: 0 }}
-    animate={{ 
-      opacity: [0, 1, 1, 0],
-      scale: [0, 1, 1, 0],
-      rotate: [0, 180, 360],
-    }}
-    transition={{
-      duration: 4,
-      delay,
-      repeat: Infinity,
-      ease: 'easeInOut',
-    }}
-  >
-    <Star className="text-cyan-300 fill-cyan-300" style={{ width: size, height: size }} />
-  </motion.div>
-);
-
-// Floating particle
-const Particle = ({ delay, x }: { delay: number; x: number }) => (
-  <motion.div
-    className="absolute w-1 h-1 rounded-full bg-gradient-to-r from-cyan-300 to-purple-400"
-    style={{ left: `${x}%`, bottom: 0 }}
-    animate={{
-      y: [0, -800],
-      opacity: [0, 1, 1, 0],
-      scale: [0, 1.5, 1, 0],
-    }}
-    transition={{
-      duration: 8 + Math.random() * 4,
-      delay,
-      repeat: Infinity,
-      ease: 'linear',
-    }}
-  />
-);
 
 // Moving border card with continuous animation
 const MovingBorderCard = ({ children, className = '' }: { children: React.ReactNode; className?: string }) => {
@@ -289,18 +249,6 @@ export default function About() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-100px' });
 
-  const stars = Array.from({ length: 20 }, () => ({
-    x: Math.random() * 100,
-    y: Math.random() * 100,
-    delay: Math.random() * 5,
-    size: 6 + Math.random() * 10,
-  }));
-
-  const particles = Array.from({ length: 30 }, () => ({
-    x: Math.random() * 100,
-    delay: Math.random() * 8,
-  }));
-
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -316,95 +264,8 @@ export default function About() {
 
   return (
     <section id="about" className="py-20 md:py-32 relative overflow-hidden">
-      {/* Dark background - same as Home */}
-      <div className="absolute inset-0 bg-[#050508]" />
+      <SectionBackground tint="cyan" />
 
-      {/* Animated mesh gradient - same as Home */}
-      <motion.div 
-        className="absolute inset-0"
-        animate={{
-          background: [
-            'radial-gradient(circle at 20% 20%, rgba(34, 211, 238, 0.15) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(167, 139, 250, 0.15) 0%, transparent 50%)',
-            'radial-gradient(circle at 80% 20%, rgba(34, 211, 238, 0.15) 0%, transparent 50%), radial-gradient(circle at 20% 80%, rgba(167, 139, 250, 0.15) 0%, transparent 50%)',
-            'radial-gradient(circle at 50% 50%, rgba(34, 211, 238, 0.15) 0%, transparent 50%), radial-gradient(circle at 50% 50%, rgba(244, 114, 182, 0.1) 0%, transparent 50%)',
-            'radial-gradient(circle at 20% 20%, rgba(34, 211, 238, 0.15) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(167, 139, 250, 0.15) 0%, transparent 50%)',
-          ],
-        }}
-        transition={{ duration: 10, repeat: Infinity, ease: 'linear' }}
-      />
-
-      {/* Grid pattern - same as Home */}
-      <div 
-        className="absolute inset-0"
-        style={{
-          backgroundImage: `
-            linear-gradient(rgba(34, 211, 238, 0.08) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(34, 211, 238, 0.08) 1px, transparent 1px)
-          `,
-          backgroundSize: '60px 60px',
-        }}
-      />
-
-      {/* Animated glow orbs - same as Home */}
-      <motion.div
-        className="absolute w-[500px] h-[500px] rounded-full"
-        style={{
-          background: 'radial-gradient(circle, rgba(34, 211, 238, 0.2) 0%, transparent 70%)',
-          right: '5%',
-          top: '10%',
-          filter: 'blur(40px)',
-        }}
-        animate={{
-          scale: [1, 1.3, 1],
-          x: [0, -50, 0],
-          y: [0, 30, 0],
-        }}
-        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-      />
-      <motion.div
-        className="absolute w-[400px] h-[400px] rounded-full"
-        style={{
-          background: 'radial-gradient(circle, rgba(167, 139, 250, 0.2) 0%, transparent 70%)',
-          left: '10%',
-          bottom: '20%',
-          filter: 'blur(40px)',
-        }}
-        animate={{
-          scale: [1, 1.2, 1],
-          x: [0, 60, 0],
-          y: [0, -40, 0],
-        }}
-        transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
-      />
-      <motion.div
-        className="absolute w-[350px] h-[350px] rounded-full"
-        style={{
-          background: 'radial-gradient(circle, rgba(244, 114, 182, 0.15) 0%, transparent 70%)',
-          left: '40%',
-          top: '50%',
-          filter: 'blur(60px)',
-        }}
-        animate={{
-          scale: [1, 1.4, 1],
-          opacity: [0.5, 1, 0.5],
-        }}
-        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
-      />
-
-      {/* Animated stars */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {stars.map((star, i) => (
-          <AnimatedStar key={i} {...star} />
-        ))}
-      </div>
-
-      {/* Rising particles */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {particles.map((particle, i) => (
-          <Particle key={i} {...particle} />
-        ))}
-      </div>
-      
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header */}
         <motion.div

@@ -1,6 +1,7 @@
 import { motion, useInView } from 'framer-motion';
 import { useRef, useState } from 'react';
 import { ExternalLink, Github, ChevronLeft, ChevronRight, ShoppingCart, Zap, TrendingUp, Package, Sparkles } from 'lucide-react';
+import SectionBackground from './SectionBackground';
 
 const projects = [
   {
@@ -71,22 +72,10 @@ export default function Projects() {
   const prevProject = () => setActiveIndex((prev) => (prev - 1 + projects.length) % projects.length);
 
   return (
-    <section id="projects" className="py-20 md:py-32 bg-[#0a0a12] relative overflow-hidden">
-      {/* Background */}
-      <div className="absolute inset-0">
-        <div 
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `
-              linear-gradient(rgba(34, 211, 238, 0.03) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(34, 211, 238, 0.03) 1px, transparent 1px)
-            `,
-            backgroundSize: '60px 60px',
-          }}
-        />
-      </div>
+    <section id="projects" className="py-20 md:py-32 relative overflow-hidden">
+      <SectionBackground tint="pink" />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header */}
         <motion.div
           ref={ref}
