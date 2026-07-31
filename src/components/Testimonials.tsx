@@ -2,6 +2,7 @@ import { motion, useInView } from 'framer-motion';
 import { useRef, useState } from 'react';
 import { Quote, Star, ChevronLeft, ChevronRight, Building2, Sparkles } from 'lucide-react';
 import SectionBackground from './SectionBackground';
+import GradientBadge from './GradientBadge';
 
 const testimonials = [
   {
@@ -75,15 +76,17 @@ export default function Testimonials() {
             initial={{ scale: 0 }}
             animate={isInView ? { scale: 1 } : {}}
             transition={{ type: 'spring', bounce: 0.5, delay: 0.2 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/20 border border-cyan-400/40 mb-6"
+            className="inline-block mb-6"
           >
-            <Sparkles className="w-4 h-4 text-cyan-300" />
-            <span className="text-cyan-300 text-sm font-medium">Testimonials</span>
+            <GradientBadge className="flex items-center gap-2 px-4 py-2 bg-cyan-500/20 border border-cyan-400/40">
+              <Sparkles className="w-4 h-4 text-cyan-300" />
+              <span className="text-cyan-300 text-sm font-medium">Testimonials</span>
+            </GradientBadge>
           </motion.div>
           <h3 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
             What{' '}
             <motion.span 
-              className="bg-gradient-to-r from-cyan-300 via-purple-300 to-pink-300 bg-clip-text text-transparent inline-block"
+              className="bg-gradient-to-r from-cyan-300 via-purple-300 to-pink-300 bg-clip-text text-transparent inline-block leading-[1.3]"
               animate={{
                 textShadow: [
                   '0 0 20px rgba(34, 211, 238, 0.3)',
@@ -149,12 +152,11 @@ export default function Testimonials() {
             </blockquote>
 
             {/* Result badge */}
-            <motion.div 
-              className="inline-flex items-center gap-2 px-4 py-2 bg-cyan-500/20 border border-cyan-400/40 rounded-full mb-8"
-              whileHover={{ scale: 1.05 }}
-            >
-              <span className="text-cyan-300 font-semibold">{testimonials[activeIndex].results}</span>
-            </motion.div>
+            <div className="inline-block mb-8">
+              <GradientBadge className="flex items-center gap-2 px-4 py-2 bg-cyan-500/20 border border-cyan-400/40">
+                <span className="text-cyan-300 font-semibold">{testimonials[activeIndex].results}</span>
+              </GradientBadge>
+            </div>
 
             {/* Author */}
             <div className="flex items-center justify-between">

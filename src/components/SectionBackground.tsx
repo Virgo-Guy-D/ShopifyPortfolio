@@ -79,6 +79,12 @@ type SectionBackgroundProps = {
   tint?: BackgroundTint;
   starCount?: number;
   particleCount?: number;
+  /**
+   * Dims every glow layer, base colour excluded. Short sections need this — the
+   * orbs are sized for a full-height hero, so in a footer-height box the glow
+   * never gets room to fall off and reads as washed out.
+   */
+  intensity?: number;
 };
 
 /**
@@ -90,6 +96,7 @@ export default function SectionBackground({
   tint = 'cyan',
   starCount = 18,
   particleCount = 24,
+  intensity = 1,
 }: SectionBackgroundProps) {
   const [lead, second, third] = TINT_ORDER[tint];
   const seed = TINT_SEED[tint];
@@ -137,88 +144,92 @@ export default function SectionBackground({
 
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden">
-      {/* Base colour */}
+      {/* Base colour — sits outside the dimmed group so `intensity` only ever
+          takes light away from the glow, never from the backdrop. */}
       <div className="absolute inset-0 bg-[#050508]" />
 
-      {/* Animated mesh gradient */}
-      <motion.div
-        className="absolute inset-0"
-        animate={{ background: mesh }}
-        transition={{ duration: 10, repeat: Infinity, ease: 'linear' }}
-      />
+      <div className="absolute inset-0" style={{ opacity: intensity }}>
+        {/* Animated mesh gradient */}
+        <motion.div
+          className="absolute inset-0"
+          animate={{ background: mesh }}
+          transition={{ duration: 10, repeat: Infinity, ease: 'linear' }}
+        />
 
-      {/* Grid pattern — always cyan. Purple and pink read visibly dimmer at the
-          same alpha, which would leave tinted sections darker than the hero. */}
-      <div
-        className="absolute inset-0"
-        style={{
-          backgroundImage: `
-            linear-gradient(rgba(${RGB.cyan}, 0.12) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(${RGB.cyan}, 0.12) 1px, transparent 1px)
-          `,
-          backgroundSize: '60px 60px',
-        }}
-      />
+        {/* Grid pattern — always cyan. Purple and pink read visibly dimmer at
+            the same alpha, which would leave tinted sections darker than the
+            hero. */}
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `
+              linear-gradient(rgba(${RGB.cyan}, 0.12) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(${RGB.cyan}, 0.12) 1px, transparent 1px)
+            `,
+            backgroundSize: '60px 60px',
+          }}
+        />
 
-      {/* Animated glow orbs */}
-      <motion.div
-        className="absolute w-[600px] h-[600px] rounded-full"
-        style={{
-          background: `radial-gradient(circle, rgba(${RGB[lead]}, 0.3) 0%, transparent 70%)`,
-          left: '10%',
-          top: '10%',
-          filter: 'blur(40px)',
-        }}
-        animate={{
-          scale: [1, 1.3, 1],
-          x: [0, 100, 0],
-          y: [0, 50, 0],
-        }}
-        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-      />
-      <motion.div
-        className="absolute w-[500px] h-[500px] rounded-full"
-        style={{
-          background: `radial-gradient(circle, rgba(${RGB[second]}, 0.25) 0%, transparent 70%)`,
-          right: '10%',
-          bottom: '10%',
-          filter: 'blur(40px)',
-        }}
-        animate={{
-          scale: [1, 1.2, 1],
-          x: [0, -80, 0],
-          y: [0, -60, 0],
-        }}
-        transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
-      />
-      <motion.div
-        className="absolute w-[400px] h-[400px] rounded-full"
-        style={{
-          background: `radial-gradient(circle, rgba(${RGB[third]}, 0.2) 0%, transparent 70%)`,
-          left: '50%',
-          top: '30%',
-          transform: 'translateX(-50%)',
-          filter: 'blur(60px)',
-        }}
-        animate={{
-          scale: [1, 1.4, 1],
-          opacity: [0.5, 1, 0.5],
-        }}
-        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
-      />
+        {/* Animated glow orbs */}
+        <motion.div
+          className="absolute w-[600px] h-[600px] rounded-full"
+          style={{
+            background: `radial-gradient(circle, rgba(${RGB[lead]}, 0.3) 0%, transparent 70%)`,
+            left: '10%',
+            top: '10%',
+            filter: 'blur(40px)',
+          }}
+          animate={{
+            scale: [1, 1.3, 1],
+            x: [0, 100, 0],
+            y: [0, 50, 0],
+          }}
+          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+        />
+        <motion.div
+          className="absolute w-[500px] h-[500px] rounded-full"
+          style={{
+            background: `radial-gradient(circle, rgba(${RGB[second]}, 0.25) 0%, transparent 70%)`,
+            right: '10%',
+            bottom: '10%',
+            filter: 'blur(40px)',
+          }}
+          animate={{
+            scale: [1, 1.2, 1],
+            x: [0, -80, 0],
+            y: [0, -60, 0],
+          }}
+          transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+        />
+        <motion.div
+          className="absolute w-[400px] h-[400px] rounded-full"
+          style={{
+            background: `radial-gradient(circle, rgba(${RGB[third]}, 0.2) 0%, transparent 70%)`,
+            left: '50%',
+            top: '30%',
+            transform: 'translateX(-50%)',
+            filter: 'blur(60px)',
+          }}
+          animate={{
+            scale: [1, 1.4, 1],
+            opacity: [0.5, 1, 0.5],
+          }}
+          transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
+        />
 
-      {/* Animated stars */}
-      <div className="absolute inset-0 overflow-hidden">
-        {stars.map((star, i) => (
-          <AnimatedStar key={i} {...star} />
-        ))}
-      </div>
+        {/* Animated stars */}
+        <div className="absolute inset-0 overflow-hidden">
+          {stars.map((star, i) => (
+            <AnimatedStar key={i} {...star} />
+          ))}
+        </div>
 
-      {/* Rising particles */}
-      <div className="absolute inset-0 overflow-hidden">
-        {particles.map((particle, i) => (
-          <Particle key={i} {...particle} />
-        ))}
+        {/* Rising particles */}
+        <div className="absolute inset-0 overflow-hidden">
+          {particles.map((particle, i) => (
+            <Particle key={i} {...particle} />
+          ))}
+        </div>
       </div>
     </div>
   );

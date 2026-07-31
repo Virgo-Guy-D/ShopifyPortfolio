@@ -2,6 +2,7 @@ import { motion, useInView } from 'framer-motion';
 import { useRef, useState } from 'react';
 import { Mail, Phone, MapPin, Send, Github, Linkedin, Twitter, CheckCircle, Loader2, Sparkles } from 'lucide-react';
 import SectionBackground from './SectionBackground';
+import GradientBadge from './GradientBadge';
 
 const contactInfo = [
   { icon: Mail, label: 'Email', value: 'brilliantshopifydev@gmail.com', href: 'mailto:aurtherparadizi@gmail.com' },
@@ -49,15 +50,17 @@ export default function Contact() {
             initial={{ scale: 0 }}
             animate={isInView ? { scale: 1 } : {}}
             transition={{ type: 'spring', bounce: 0.5, delay: 0.2 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/20 border border-cyan-400/40 mb-6"
+            className="inline-block mb-6"
           >
-            <Sparkles className="w-4 h-4 text-cyan-300" />
-            <span className="text-cyan-300 text-sm font-medium">Get In Touch</span>
+            <GradientBadge className="flex items-center gap-2 px-4 py-2 bg-cyan-500/20 border border-cyan-400/40">
+              <Sparkles className="w-4 h-4 text-cyan-300" />
+              <span className="text-cyan-300 text-sm font-medium">Get In Touch</span>
+            </GradientBadge>
           </motion.div>
           <h3 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
             Let's{' '}
             <motion.span 
-              className="bg-gradient-to-r from-cyan-300 via-purple-300 to-pink-300 bg-clip-text text-transparent inline-block"
+              className="bg-gradient-to-r from-cyan-300 via-purple-300 to-pink-300 bg-clip-text text-transparent inline-block leading-[1.3]"
               animate={{
                 textShadow: [
                   '0 0 20px rgba(6, 182, 212, 0.3)',
@@ -81,16 +84,22 @@ export default function Contact() {
         </motion.div>
 
         <div className="grid lg:grid-cols-2 gap-12">
-          {/* Contact Info */}
+          {/* Contact Info — same panel treatment as the form, so the two
+              columns read as a matching pair. */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="space-y-8"
           >
-            <div>
+            <motion.div
+              className="h-full flex flex-col bg-gray-900/80 rounded-2xl border border-gray-700 p-6 md:p-8"
+              whileHover={{ boxShadow: '0 20px 40px rgba(34, 211, 238, 0.1)' }}
+            >
               <h4 className="text-xl font-semibold text-white mb-6">Contact Information</h4>
-              <div className="space-y-4">
+
+              {/* Rows borrow the form inputs' styling — inset and darker than
+                  the panel — so both columns share one visual vocabulary. */}
+              <div className="space-y-5">
                 {contactInfo.map(({ icon: Icon, label, value, href }, index) => (
                   <motion.a
                     key={label}
@@ -98,66 +107,70 @@ export default function Contact() {
                     initial={{ opacity: 0, x: -30 }}
                     animate={isInView ? { opacity: 1, x: 0 } : {}}
                     transition={{ delay: 0.4 + index * 0.1 }}
-                    whileHover={{ scale: 1.02, x: 5 }}
-                    className="flex items-center gap-4 p-4 bg-gray-900/80 rounded-xl border border-gray-700 hover:border-cyan-400/50 transition-all duration-300 group"
+                    whileHover={{ scale: 1.02 }}
+                    className="flex items-center gap-4 px-4 py-3 bg-[#0a0a12] border border-gray-700 rounded-xl hover:border-cyan-400 transition-all duration-300 group"
                   >
-                    <motion.div 
-                      className="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center"
+                    <motion.div
+                      className="w-11 h-11 shrink-0 rounded-xl bg-emerald-500/10 flex items-center justify-center"
                       whileHover={{ rotate: 360 }}
                       transition={{ duration: 0.5 }}
                     >
                       <Icon className="w-5 h-5 text-cyan-300" />
                     </motion.div>
-                    <div>
+                    <div className="min-w-0">
                       <div className="text-sm text-gray-500">{label}</div>
-                      <div className="font-medium text-gray-300 group-hover:text-white transition-colors">{value}</div>
+                      <div className="font-medium text-gray-300 truncate group-hover:text-white transition-colors">
+                        {value}
+                      </div>
                     </div>
                   </motion.a>
                 ))}
               </div>
-            </div>
 
-            <div>
-              <h4 className="text-xl font-semibold text-white mb-4">Connect with Me</h4>
-              <div className="flex gap-3">
-                {socialLinks.map(({ icon: Icon, label, href }, index) => (
-                  <motion.a
-                    key={label}
-                    href={href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    initial={{ opacity: 0, scale: 0 }}
-                    animate={isInView ? { opacity: 1, scale: 1 } : {}}
-                    transition={{ delay: 0.6 + index * 0.1, type: 'spring' }}
-                    whileHover={{ scale: 1.15, y: -3 }}
-                    whileTap={{ scale: 0.9 }}
-                    className="w-12 h-12 bg-gray-900/80 border border-gray-700 rounded-xl flex items-center justify-center hover:border-cyan-400/50 hover:bg-emerald-500/10 transition-all duration-300 group"
-                    aria-label={label}
-                  >
-                    <Icon className="w-5 h-5 text-gray-500 group-hover:text-cyan-300 transition-colors" />
-                  </motion.a>
-                ))}
+              <div className="mt-8">
+                <h5 className="text-sm font-medium text-gray-300 mb-3">Connect with Me</h5>
+                <div className="flex gap-3">
+                  {socialLinks.map(({ icon: Icon, label, href }, index) => (
+                    <motion.a
+                      key={label}
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      initial={{ opacity: 0, scale: 0 }}
+                      animate={isInView ? { opacity: 1, scale: 1 } : {}}
+                      transition={{ delay: 0.6 + index * 0.1, type: 'spring' }}
+                      whileHover={{ scale: 1.15, y: -3 }}
+                      whileTap={{ scale: 0.9 }}
+                      className="w-12 h-12 bg-[#0a0a12] border border-gray-700 rounded-xl flex items-center justify-center hover:border-cyan-400 transition-all duration-300 group"
+                      aria-label={label}
+                    >
+                      <Icon className="w-5 h-5 text-gray-500 group-hover:text-cyan-300 transition-colors" />
+                    </motion.a>
+                  ))}
+                </div>
               </div>
-            </div>
 
-            {/* Availability badge */}
-            <motion.div 
-              className="p-6 bg-emerald-500/10 rounded-2xl border border-cyan-400/30"
-              initial={{ opacity: 0, y: 20 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ delay: 0.8 }}
-              whileHover={{ scale: 1.02 }}
-            >
-              <div className="flex items-center gap-3 mb-4">
-                <span className="relative flex h-3 w-3">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-300 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-3 w-3 bg-cyan-300"></span>
-                </span>
-                <span className="font-semibold text-cyan-300">Available for hire</span>
-              </div>
-              <p className="text-sm text-gray-300">
-                I'm currently looking for new opportunities. Whether you have a question or just want to say hi, I'll try my best to get back to you!
-              </p>
+              {/* Availability — mt-auto pins it to the panel floor, mirroring
+                  the way the submit button anchors the form. */}
+              <motion.div
+                className="mt-auto pt-8"
+                initial={{ opacity: 0, y: 20 }}
+                animate={isInView ? { opacity: 1, y: 0 } : {}}
+                transition={{ delay: 0.8 }}
+              >
+                <div className="border-t border-gray-800 pt-6">
+                  <div className="flex items-center gap-3 mb-3">
+                    <span className="relative flex h-3 w-3">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-300 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-3 w-3 bg-cyan-300"></span>
+                    </span>
+                    <span className="font-semibold text-cyan-300">Available for hire</span>
+                  </div>
+                  <p className="text-sm text-gray-400 leading-relaxed">
+                    I'm currently looking for new opportunities. Whether you have a question or just want to say hi, I'll try my best to get back to you!
+                  </p>
+                </div>
+              </motion.div>
             </motion.div>
           </motion.div>
 

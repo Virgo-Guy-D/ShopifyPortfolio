@@ -3,13 +3,16 @@ import { useEffect, useState, useRef } from 'react';
 import { MapPin, ShoppingCart, Package, CreditCard, Truck, Store, BarChart3, Tag, Sparkles } from 'lucide-react';
 import SectionBackground from './SectionBackground';
 
+// Drawn from the Shopify & E-Commerce skill list — names kept verbatim so the
+// hero, the Skills tab and any profile listings all read the same.
 const techStack = [
   { name: 'Shopify', icon: '🛒' },
+  { name: 'Shopify Plus', icon: '💎' },
+  { name: 'Shopify Theme', icon: '🎨' },
+  { name: 'Liquid', icon: '💧' },
+  { name: 'Shopify Apps', icon: '🧩' },
   { name: 'React', icon: '⚛️' },
-  { name: 'Node.js', icon: '🟢' },
-  { name: 'TypeScript', icon: '🔷' },
-  { name: 'Python', icon: '🐍' },
-  { name: 'Tailwind', icon: '🎨' },
+  { name: 'Responsive Design', icon: '📱' },
 ];
 
 const floatingIcons = [
@@ -24,9 +27,8 @@ const floatingIcons = [
 ];
 
 const roles = [
-  'Full-Stack E-Commerce Developer',
-  'Shopify Expert',
-  'Conversion Optimization Specialist',
+  'Shopify Plus Expert',
+  'High-Converting E-commerce',
   'Custom Theme Developer',
 ];
 
@@ -556,7 +558,7 @@ export default function Hero() {
 
       {/* Main content */}
       <motion.div
-        className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20"
+        className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-32"
         style={{ rotateX, rotateY, transformStyle: 'preserve-3d' }}
       >
         <div className="text-center" style={{ transform: 'translateZ(50px)' }}>
@@ -613,7 +615,7 @@ export default function Hero() {
                 onClick={addSparkleEffect}
                 transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
               >
-                Full-Stack E-Commerce Developer
+                Senior Shopify Developer
               </motion.h2>
             </TraceBorderCard>
           </motion.div>
@@ -670,7 +672,7 @@ export default function Hero() {
                 >
                   <MapPin className="w-4 h-4 text-cyan-300" />
                 </motion.div>
-                <span>Tokyo, Japan • Open to Remote</span>
+                <span>Belo Horizonte, MG, Brazil • Open to Remote</span>
               </motion.div>
             </TraceBorderCard>
           </motion.div>
@@ -682,7 +684,7 @@ export default function Hero() {
             transition={{ duration: 0.5, delay: 1.2 }}
             className="text-lg text-gray-300 max-w-2xl mx-auto mb-10 mt-8 leading-relaxed"
           >
-            I build{' '}
+            I help brands build{' '}
             <motion.span 
               className="text-cyan-300 font-bold cursor-pointer select-none"
               animate={{
@@ -697,9 +699,9 @@ export default function Hero() {
               onClick={addSparkleEffect}
               transition={{ duration: 2, repeat: Infinity }}
             >
-              high-converting Shopify stores
+              high-performing Shopify stores
             </motion.span>{' '}
-            and custom e-commerce solutions. Specialized in creating seamless shopping experiences that{' '}
+            that increase{' '}
             <motion.span 
               className="text-purple-300 font-bold cursor-pointer select-none"
               animate={{
@@ -714,9 +716,41 @@ export default function Hero() {
               onClick={addSparkleEffect}
               transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
             >
-              drive revenue
-            </motion.span>{' '}
-            and delight customers.
+              conversions
+            </motion.span>
+             , improve{' '}
+            <motion.span 
+              className="text-purple-300 font-bold cursor-pointer select-none"
+              animate={{
+                textShadow: [
+                  '0 0 10px rgba(167, 139, 250, 0.5)',
+                  '0 0 25px rgba(167, 139, 250, 0.8)',
+                  '0 0 10px rgba(167, 139, 250, 0.5)',
+                ],
+              }}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95, rotate: -5 }}
+              onClick={addSparkleEffect}
+              transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
+            >
+              customer experience
+            </motion.span>, and scale{' '}
+            <motion.span 
+              className="text-purple-300 font-bold cursor-pointer select-none"
+              animate={{
+                textShadow: [
+                  '0 0 10px rgba(167, 139, 250, 0.5)',
+                  '0 0 25px rgba(167, 139, 250, 0.8)',
+                  '0 0 10px rgba(167, 139, 250, 0.5)',
+                ],
+              }}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95, rotate: -5 }}
+              onClick={addSparkleEffect}
+              transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
+            >
+              efficiently
+            </motion.span>.
           </motion.p>
 
           {/* CTA Buttons */}
@@ -758,48 +792,51 @@ export default function Hero() {
           </motion.div>
         </div>
 
-        {/* Scroll indicator */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 2 }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2"
-        >
-          <TraceBorderCard className="rounded-full" color="cyan">
-            <motion.a
-              href="#about"
-              animate={{ y: [0, 5, 0] }}
-              transition={{ duration: 2, repeat: Infinity }}
-              whileTap={{ scale: 0.9 }}
-              onClick={addSparkleEffect}
-              className="flex flex-col items-center gap-2 text-gray-400 cursor-pointer px-4 py-3"
+      </motion.div>
+
+      {/* Scroll indicator — anchored to the section rather than the content
+          box, otherwise `bottom-8` resolves against the content and the cue
+          comes to rest on top of the tech-stack badges. */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 2 }}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20"
+      >
+        <TraceBorderCard className="rounded-full" color="cyan">
+          <motion.a
+            href="#about"
+            animate={{ y: [0, 5, 0] }}
+            transition={{ duration: 2, repeat: Infinity }}
+            whileTap={{ scale: 0.9 }}
+            onClick={addSparkleEffect}
+            className="flex flex-col items-center gap-2 text-gray-400 cursor-pointer px-4 py-3"
+          >
+            <motion.span
+              className="text-xs tracking-widest uppercase font-medium"
+              whileHover={{ color: '#22d3ee' }}
             >
-              <motion.span 
-                className="text-xs tracking-widest uppercase font-medium"
-                whileHover={{ color: '#22d3ee' }}
-              >
-                Scroll
-              </motion.span>
-              <motion.div 
-                className="w-6 h-10 rounded-full border-2 border-gray-500 flex items-start justify-center p-1"
-              >
-                <motion.div
-                  className="w-1.5 h-2.5 bg-cyan-300 rounded-full"
-                  animate={{ 
-                    y: [0, 12, 0], 
-                    opacity: [1, 0.3, 1],
-                    boxShadow: [
-                      '0 0 8px rgba(34, 211, 238, 0.6)',
-                      '0 0 20px rgba(34, 211, 238, 1)',
-                      '0 0 8px rgba(34, 211, 238, 0.6)',
-                    ],
-                  }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                />
-              </motion.div>
-            </motion.a>
-          </TraceBorderCard>
-        </motion.div>
+              Scroll
+            </motion.span>
+            <motion.div
+              className="w-6 h-10 rounded-full border-2 border-gray-500 flex items-start justify-center p-1"
+            >
+              <motion.div
+                className="w-1.5 h-2.5 bg-cyan-300 rounded-full"
+                animate={{
+                  y: [0, 12, 0],
+                  opacity: [1, 0.3, 1],
+                  boxShadow: [
+                    '0 0 8px rgba(34, 211, 238, 0.6)',
+                    '0 0 20px rgba(34, 211, 238, 1)',
+                    '0 0 8px rgba(34, 211, 238, 0.6)',
+                  ],
+                }}
+                transition={{ duration: 2, repeat: Infinity }}
+              />
+            </motion.div>
+          </motion.a>
+        </TraceBorderCard>
       </motion.div>
     </section>
   );

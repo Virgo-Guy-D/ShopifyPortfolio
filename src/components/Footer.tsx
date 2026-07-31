@@ -2,9 +2,6 @@ import { motion } from 'framer-motion';
 import {
   ArrowUpRight,
   ArrowUp,
-  Github,
-  Linkedin,
-  Twitter,
   Mail,
   MapPin,
   Store,
@@ -27,12 +24,6 @@ const explore = [
   { name: 'Client Results', href: '#testimonials' },
 ];
 
-const socials = [
-  { name: 'GitHub', href: 'https://github.com/Virgo-Guy-D', icon: Github },
-  { name: 'LinkedIn', href: '#', icon: Linkedin },
-  { name: 'Twitter', href: '#', icon: Twitter },
-];
-
 export default function Footer() {
   const currentYear = new Date().getFullYear();
 
@@ -40,7 +31,7 @@ export default function Footer() {
 
   return (
     <footer className="relative border-t border-gray-800/80 overflow-hidden">
-      <SectionBackground tint="cyan" starCount={12} particleCount={16} />
+      <SectionBackground tint="cyan" starCount={12} particleCount={16} intensity={0.4} />
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
@@ -56,7 +47,7 @@ export default function Footer() {
               Arthur Paradizi<span className="text-cyan-300">.</span>
             </p>
             <p className="mt-3 text-sm text-gray-400 leading-relaxed max-w-sm">
-              Full-stack e-commerce developer building high-converting Shopify
+              Senior shopify developer building high-converting Shopify
               storefronts — custom themes, headless builds and the performance
               work that makes them pay off.
             </p>
@@ -72,7 +63,7 @@ export default function Footer() {
             <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-gray-500">
               <span className="inline-flex items-center gap-1.5">
                 <MapPin className="w-3.5 h-3.5" />
-                Tokyo, Japan
+                  Belo Horizonte, MG, Brazil
               </span>
               <span className="inline-flex items-center gap-2">
                 <span className="relative flex w-2 h-2">
@@ -106,7 +97,7 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Explore + Connect */}
+          {/* Explore */}
           <div className="lg:col-span-3">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-500">
               Explore
@@ -124,25 +115,6 @@ export default function Footer() {
                 </li>
               ))}
             </ul>
-
-            <h3 className="mt-8 text-xs font-semibold uppercase tracking-wider text-gray-500">
-              Connect
-            </h3>
-            <div className="mt-4 flex items-center gap-3">
-              {socials.map((social) => (
-                <motion.a
-                  key={social.name}
-                  href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={social.name}
-                  whileHover={{ y: -3 }}
-                  className="flex items-center justify-center w-10 h-10 rounded-xl bg-gray-900 border border-gray-800 text-gray-400 hover:text-cyan-300 hover:border-cyan-400/40 transition-colors"
-                >
-                  <social.icon className="w-4 h-4" />
-                </motion.a>
-              ))}
-            </div>
           </div>
         </motion.div>
 

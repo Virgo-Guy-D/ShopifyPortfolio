@@ -2,10 +2,11 @@ import { motion, useInView } from 'framer-motion';
 import { useRef, useState } from 'react';
 import { TrendingUp, Code2, Users, Zap, Award, Clock, CheckCircle, Handshake, Sparkles } from 'lucide-react';
 import SectionBackground from './SectionBackground';
+import GradientBadge from './GradientBadge';
 
 const stats = [
   { value: '8+', label: 'Years Experience', icon: '🚀' },
-  { value: '50+', label: 'Projects Completed', icon: '💼' },
+  { value: '150+', label: 'Projects Completed', icon: '💼' },
   { value: '100%', label: 'Client Satisfaction', icon: '⭐' },
 ];
 
@@ -25,12 +26,14 @@ const badges = [
 
 const codeSnippet = `const developer = {
   name: "Arthur Paradizi",
-  role: "Full-Stack E-Commerce Dev",
+  role: "Senior Shopify Developer",
   experience: "8+ years",
+  location: "Remote • Worldwide",
   focus: [
     "Shopify Development",
     "Custom Themes",
     "App Integrations",
+    "Headless Commerce",
     "Conversion Optimization"
   ],
   passion: "Building stores that sell"
@@ -202,44 +205,55 @@ const TraceBorderCard = ({ children, className = '', color = 'cyan' }: { childre
 
 // Badge with border animation
 const AnimatedBadge = ({ icon: Icon, text, delay }: { icon: React.ElementType; text: string; delay: number }) => {
-  const [isHovered, setIsHovered] = useState(false);
-
   return (
     <motion.div
-      className="relative"
       initial={{ opacity: 0, scale: 0.8 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ delay }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      whileHover={{ scale: 1.1, y: -3 }}
+      className="inline-block"
     >
-      {/* Rotating border */}
-      <motion.div
-        className="absolute -inset-[1px] rounded-full"
-        style={{
-          background: 'linear-gradient(90deg, #22d3ee, #a78bfa, #f472b6, #22d3ee)',
-          backgroundSize: '300% 100%',
-        }}
-        animate={{
-          backgroundPosition: isHovered ? ['0% 50%', '300% 50%'] : '0% 50%',
-          opacity: isHovered ? 1 : 0,
-        }}
-        transition={{
-          backgroundPosition: { duration: 1.5, repeat: Infinity, ease: 'linear' },
-          opacity: { duration: 0.3 },
-        }}
-      />
-      
-      {/* Inner background */}
-      <div className="relative flex items-center gap-2 px-4 py-2 bg-gray-900/95 rounded-full border border-transparent">
-        <motion.div
-          animate={{ rotate: isHovered ? 360 : 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <Icon className="w-4 h-4 text-cyan-300" />
-        </motion.div>
+      <GradientBadge
+        className="flex items-center gap-2 px-4 py-2 bg-gray-900/95 border border-transparent"
+        hoverScale={1.1}
+      >
+        <Icon className="w-4 h-4 text-cyan-300" />
         <span className="text-gray-300 text-sm">{text}</span>
+      </GradientBadge>
+    </motion.div>
+  );
+};
+
+// Portrait lives at public/images/profile.jpeg; the initials tile below is the
+// fallback if it ever goes missing.
+const PHOTO_SRC = '/images/profile.jpeg';
+
+// Sits in the empty gutter beside the code, inside the editor card. Hidden at
+// the lg breakpoint, where the two-column grid squeezes the card to ~456px and
+// the photo would push the code into horizontal scroll; it returns at xl.
+const ProfilePhoto = () => {
+  const [failed, setFailed] = useState(false);
+
+  return (
+    <motion.div
+      className="hidden sm:block lg:hidden xl:block shrink-0 w-1/3 max-w-[11rem]"
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ delay: 0.6, duration: 0.5 }}
+      whileHover={{ scale: 1.04 }}
+    >
+      <div className="relative aspect-square rounded-xl overflow-hidden border border-gray-700">
+        {failed ? (
+          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-cyan-500/20 to-purple-500/20 text-2xl font-bold text-cyan-200">
+            AP
+          </div>
+        ) : (
+          <img
+            src={PHOTO_SRC}
+            alt="Arthur Paradizi"
+            onError={() => setFailed(true)}
+            className="w-full h-full object-cover"
+          />
+        )}
       </div>
     </motion.div>
   );
@@ -279,10 +293,12 @@ export default function About() {
             initial={{ scale: 0 }}
             animate={isInView ? { scale: 1 } : {}}
             transition={{ type: 'spring', bounce: 0.5, delay: 0.2 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/20 border border-cyan-400/40 mb-6"
+            className="inline-block mb-6"
           >
-            <Sparkles className="w-4 h-4 text-cyan-300" />
-            <span className="text-cyan-300 text-sm font-medium">About Me</span>
+            <GradientBadge className="flex items-center gap-2 px-4 py-2 bg-cyan-500/20 border border-cyan-400/40">
+              <Sparkles className="w-4 h-4 text-cyan-300" />
+              <span className="text-cyan-300 text-sm font-medium">About Me</span>
+            </GradientBadge>
           </motion.div>
           <h3 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
             Crafting{' '}
@@ -321,25 +337,28 @@ export default function About() {
                   <motion.div whileHover={{ scale: 1.2 }} className="w-3 h-3 rounded-full bg-green-500 cursor-pointer" />
                   <span className="ml-2 text-xs text-gray-400 font-mono">developer.ts</span>
                 </div>
-                <pre className="p-6 text-sm overflow-x-auto">
-                  <code className="font-mono">
-                    {codeSnippet.split('\n').map((line, i) => (
-                      <motion.div 
-                        key={i} 
-                        className="flex"
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={isInView ? { opacity: 1, x: 0 } : {}}
-                        transition={{ delay: 0.5 + i * 0.05 }}
-                      >
-                        <span className="text-gray-500 w-6 flex-shrink-0 select-none">{i + 1}</span>
-                        <span className="text-gray-300">
-                          {line.includes('const') && <span className="text-cyan-300">{line.split(' ')[0]} </span>}
-                          {line.includes('const') ? line.slice(6) : line}
-                        </span>
-                      </motion.div>
-                    ))}
-                  </code>
-                </pre>
+                <div className="flex items-start gap-5 p-6">
+                  <pre className="flex-1 min-w-0 text-sm overflow-x-auto">
+                    <code className="font-mono">
+                      {codeSnippet.split('\n').map((line, i) => (
+                        <motion.div
+                          key={i}
+                          className="flex"
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={isInView ? { opacity: 1, x: 0 } : {}}
+                          transition={{ delay: 0.5 + i * 0.05 }}
+                        >
+                          <span className="text-gray-500 w-6 flex-shrink-0 select-none">{i + 1}</span>
+                          <span className="text-gray-300">
+                            {line.includes('const') && <span className="text-cyan-300">{line.split(' ')[0]} </span>}
+                            {line.includes('const') ? line.slice(6) : line}
+                          </span>
+                        </motion.div>
+                      ))}
+                    </code>
+                  </pre>
+                  <ProfilePhoto />
+                </div>
               </div>
             </MovingBorderCard>
           </motion.div>
@@ -349,7 +368,7 @@ export default function About() {
             <div>
               <h4 className="text-xl font-semibold text-white mb-3">Who I Am</h4>
               <p className="text-gray-300 leading-relaxed">
-                I'm a Full-Stack E-Commerce Developer specializing in Shopify and custom online store solutions. 
+                I'm a Senior Shopify Developer specializing in Shopify and custom online store solutions. 
                 With over 8 years of experience, I've helped businesses of all sizes launch and scale their online presence.
               </p>
             </div>
@@ -364,7 +383,7 @@ export default function About() {
               <h4 className="text-xl font-semibold text-white mb-4">Key Achievements</h4>
               <ul className="space-y-3">
                 {[
-                  'Built and launched 50+ successful Shopify stores across various industries',
+                  'Built and launched 150+ successful Shopify stores across various industries',
                   'Developed custom apps that increased client revenue by an average of 35%',
                   'Optimized checkout flows resulting in 25% reduction in cart abandonment',
                   'Created reusable component libraries for rapid store deployment'

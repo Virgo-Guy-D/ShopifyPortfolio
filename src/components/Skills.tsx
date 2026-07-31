@@ -1,75 +1,80 @@
 import { motion, useInView } from 'framer-motion';
 import { useRef, useState } from 'react';
-import { Monitor, Server, ShoppingBag, Database, Cloud, Plug, Sparkles } from 'lucide-react';
+import { Monitor, Server, ShoppingBag, TrendingUp, Plug, Store, Sparkles } from 'lucide-react';
 import SectionBackground from './SectionBackground';
+import GradientBadge from './GradientBadge';
 
+// Scoped to Shopify development: every skill below feeds Shopify work, and each
+// one appears in exactly one tab so the section never quotes two figures for the
+// same skill. Levels carried over from the previous grouping where they existed.
 const skillCategories = [
   {
-    id: 'frontend',
-    name: 'Frontend',
-    icon: Monitor,
+    id: 'shopify-core',
+    name: 'Shopify Core',
+    icon: ShoppingBag,
     color: 'cyan',
     skills: [
-      { name: 'React', level: 95 },
-      { name: 'TypeScript', level: 90 },
-      { name: 'JavaScript', level: 95 },
-      { name: 'HTML/CSS', level: 95 },
-      { name: 'Tailwind CSS', level: 92 },
-      { name: 'Next.js', level: 88 },
+      { name: 'Shopify', level: 100 },
+      { name: 'Shopify Development', level: 99 },
+      { name: 'Shopify Plus', level: 95 },
+      { name: 'Shopify Theme', level: 98 },
+      { name: 'Liquid', level: 98 },
+      { name: 'Shopify CLI', level: 95 },
     ],
   },
   {
-    id: 'backend',
-    name: 'Backend',
+    id: 'apps-apis',
+    name: 'Apps & APIs',
     icon: Server,
     color: 'purple',
     skills: [
-      { name: 'Node.js', level: 92 },
-      { name: 'Python', level: 85 },
-      { name: 'Express.js', level: 90 },
-      { name: 'REST APIs', level: 95 },
-      { name: 'GraphQL', level: 85 },
-      { name: 'Django', level: 78 },
+      { name: 'REST APIs', level: 98 },
+      { name: 'Node.js', level: 96 },
+      { name: 'Admin API', level: 94 },
+      { name: 'Shopify Apps', level: 97 },
+      { name: 'Storefront API', level: 93 },
+      { name: 'GraphQL', level: 90 },
     ],
   },
   {
-    id: 'shopify',
-    name: 'Shopify',
-    icon: ShoppingBag,
+    id: 'frontend',
+    name: 'Headless & Frontend',
+    icon: Monitor,
     color: 'pink',
     skills: [
-      { name: 'Liquid', level: 95 },
-      { name: 'Theme Dev', level: 95 },
-      { name: 'Shopify CLI', level: 90 },
-      { name: 'Storefront API', level: 88 },
-      { name: 'Admin API', level: 90 },
-      { name: 'Hydrogen', level: 82 },
+      { name: 'React', level: 97 },
+      { name: 'JavaScript', level: 99 },
+      { name: 'Tailwind CSS', level: 96 },
+      { name: 'TypeScript', level: 94 },
+      { name: 'Next.js', level: 95 },
+      { name: 'Hydrogen', level: 92 },
     ],
   },
   {
-    id: 'database',
-    name: 'Database',
-    icon: Database,
+    id: 'storefront',
+    name: 'Storefront & Design',
+    icon: Store,
     color: 'cyan',
     skills: [
-      { name: 'PostgreSQL', level: 88 },
-      { name: 'MongoDB', level: 85 },
-      { name: 'Redis', level: 80 },
-      { name: 'Prisma', level: 85 },
-      { name: 'Firebase', level: 82 },
+      { name: 'HTML/CSS', level: 97 },
+      { name: 'Ecommerce Website', level: 94 },
+      { name: 'Responsive Design', level: 94 },
+      { name: 'Shopify Templates', level: 95 },
+      { name: 'Web Design', level: 92 },
     ],
   },
   {
-    id: 'cloud',
-    name: 'Cloud',
-    icon: Cloud,
+    id: 'performance',
+    name: 'Performance & CRO',
+    icon: TrendingUp,
     color: 'purple',
     skills: [
-      { name: 'Vercel', level: 92 },
-      { name: 'AWS', level: 78 },
-      { name: 'Docker', level: 80 },
-      { name: 'GitHub Actions', level: 85 },
-      { name: 'Cloudflare', level: 82 },
+      { name: 'Conversion Rate Optimization', level: 93 },
+      { name: 'Page Speed Optimization', level: 91 },
+      { name: 'Website Optimization', level: 90 },
+      { name: 'SEO', level: 91 },
+      { name: 'A/B Testing', level: 92 },
+      { name: 'Analytics', level: 90 },
     ],
   },
   {
@@ -78,16 +83,23 @@ const skillCategories = [
     icon: Plug,
     color: 'pink',
     skills: [
+      { name: 'API Integration', level: 95 },
       { name: 'Stripe', level: 92 },
-      { name: 'PayPal', level: 88 },
-      { name: 'Klaviyo', level: 85 },
-      { name: 'Mailchimp', level: 82 },
-      { name: 'Zapier', level: 85 },
+      { name: 'PayPal', level: 93 },
+      { name: 'Klaviyo', level: 95 },
+      { name: 'Zapier', level: 90 },
+      { name: 'Mailchimp', level: 92 },
     ],
   },
 ];
 
-const additionalSkills = ['Git', 'Figma', 'Agile', 'CI/CD', 'Testing', 'SEO', 'A/B Testing', 'Analytics'];
+const additionalSkills = [
+  'Front-End Development',
+  'Ecommerce Dev Consultation',
+  'Git',
+  'Figma',
+  'Testing',
+];
 
 const colorClasses: Record<string, { gradient: string }> = {
   cyan: { gradient: 'from-cyan-500 to-cyan-400' },
@@ -172,7 +184,7 @@ const TraceBorderCard = ({ children, className = '' }: { children: React.ReactNo
 export default function Skills() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-100px' });
-  const [activeCategory, setActiveCategory] = useState('frontend');
+  const [activeCategory, setActiveCategory] = useState('shopify-core');
 
   const activeSkillData = skillCategories.find(c => c.id === activeCategory);
   const activeSkills = activeSkillData?.skills || [];
@@ -195,15 +207,17 @@ export default function Skills() {
             initial={{ scale: 0 }}
             animate={isInView ? { scale: 1 } : {}}
             transition={{ type: 'spring', bounce: 0.5, delay: 0.2 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500/20 border border-purple-400/40 mb-6"
+            className="inline-block mb-6"
           >
-            <Sparkles className="w-4 h-4 text-purple-300" />
-            <span className="text-purple-300 text-sm font-medium">Skills & Expertise</span>
+            <GradientBadge className="flex items-center gap-2 px-4 py-2 bg-purple-500/20 border border-purple-400/40">
+              <Sparkles className="w-4 h-4 text-purple-300" />
+              <span className="text-purple-300 text-sm font-medium">Skills & Expertise</span>
+            </GradientBadge>
           </motion.div>
           <h3 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
             My{' '}
             <motion.span 
-              className="bg-gradient-to-r from-cyan-300 via-purple-300 to-pink-300 bg-clip-text text-transparent inline-block"
+              className="bg-gradient-to-r from-cyan-300 via-purple-300 to-pink-300 bg-clip-text text-transparent inline-block leading-[1.3]"
               animate={{ textShadow: ['0 0 20px rgba(167, 139, 250, 0.3)', '0 0 40px rgba(167, 139, 250, 0.5)', '0 0 20px rgba(167, 139, 250, 0.3)'], scale: [1, 1.02, 1] }}
               transition={{ duration: 2, repeat: Infinity }}
             >
@@ -254,11 +268,11 @@ export default function Skills() {
             const colors = colorClasses[activeColor];
             return (
               <TraceBorderCard key={skill.name} className="rounded-xl">
-                <div className="bg-gray-900/80 p-5 rounded-xl">
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="font-medium text-gray-300">{skill.name}</span>
-                    <motion.span 
-                      className="text-sm font-bold text-cyan-300"
+                <div className="h-full flex flex-col bg-gray-900/80 p-5 rounded-xl">
+                  <div className="flex items-start justify-between gap-3 mb-3">
+                    <span className="font-medium text-gray-300 min-w-0">{skill.name}</span>
+                    <motion.span
+                      className="shrink-0 text-sm font-bold text-cyan-300"
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       transition={{ delay: 0.5 + index * 0.08, type: 'spring' }}
@@ -266,7 +280,7 @@ export default function Skills() {
                       {skill.level}%
                     </motion.span>
                   </div>
-                  <div className="h-2.5 bg-gray-800 rounded-full overflow-hidden">
+                  <div className="mt-auto h-2.5 bg-gray-800 rounded-full overflow-hidden">
                     <motion.div
                       initial={{ width: 0 }}
                       animate={{ width: `${skill.level}%` }}
@@ -296,16 +310,17 @@ export default function Skills() {
           <h4 className="text-lg font-semibold text-white mb-6">Additional Expertise</h4>
           <div className="flex flex-wrap justify-center gap-3">
             {additionalSkills.map((skill, index) => (
-              <TraceBorderCard key={skill} className="rounded-xl">
-                <motion.span
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={isInView ? { opacity: 1, scale: 1 } : {}}
-                  transition={{ duration: 0.4, delay: 0.7 + index * 0.05 }}
-                  className="block px-4 py-2 bg-gray-900/80 rounded-xl text-sm text-gray-300 cursor-default"
-                >
+              <motion.div
+                key={skill}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={isInView ? { opacity: 1, scale: 1 } : {}}
+                transition={{ duration: 0.4, delay: 0.7 + index * 0.05 }}
+                className="inline-block"
+              >
+                <GradientBadge rounded="rounded-xl" className="px-4 py-2 bg-gray-900/80 text-sm text-gray-300 cursor-default">
                   {skill}
-                </motion.span>
-              </TraceBorderCard>
+                </GradientBadge>
+              </motion.div>
             ))}
           </div>
         </motion.div>
