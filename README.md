@@ -24,13 +24,13 @@ configure. To run them separately, use `npm run dev:web` and `npm run dev:api`.
 
 The form in the Contact section posts to `POST /api/contact` on the bundled
 Express server ([server/](server/)), which sends the message on to
-`brilliantshopifydev@gmail.com` via [Resend](https://resend.com).
+`arthurparadizi77825@gmail.com` via [Resend](https://resend.com).
 
 The API key lives on the server and is never bundled into the browser build.
 
 To activate it:
 
-1. Sign up at <https://resend.com> **using `brilliantshopifydev@gmail.com`** — see
+1. Sign up at <https://resend.com> **using `arthurparadizi77825@gmail.com`** — see
    the note below on why the address matters.
 2. Create an API key under **API Keys**. Sending access is all it needs.
 3. `cp .env.example .env` and paste the key into `RESEND_API_KEY`.

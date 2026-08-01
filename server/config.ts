@@ -28,7 +28,7 @@ function envNumber(name: string, fallback: number): number {
 export const isProduction = process.env.NODE_ENV === 'production';
 
 /** Where contact form submissions are delivered. */
-export const CONTACT_TO = env('CONTACT_TO') ?? 'brilliantshopifydev@gmail.com';
+export const CONTACT_TO = env('CONTACT_TO') ?? 'arthurparadizi77825@gmail.com';
 
 /**
  * The `From:` address. Resend only accepts a domain you have verified with them;

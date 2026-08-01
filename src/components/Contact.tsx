@@ -5,7 +5,7 @@ import SectionBackground from './SectionBackground';
 import GradientBadge from './GradientBadge';
 
 /** Where form submissions and mailto: links land. */
-const CONTACT_EMAIL = 'brilliantshopifydev@gmail.com';
+const CONTACT_EMAIL = 'arthurparadizi77825@gmail.com';
 
 const contactInfo = [
   { icon: Mail, label: 'Email', value: CONTACT_EMAIL, href: `mailto:${CONTACT_EMAIL}` },

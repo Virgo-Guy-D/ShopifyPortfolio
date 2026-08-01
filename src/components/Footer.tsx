@@ -53,11 +53,11 @@ export default function Footer() {
             </p>
 
             <a
-              href="mailto:brilliantshopifydev@gmail.com"
+              href="mailto:arthurparadizi77825@gmail.com"
               className="mt-5 inline-flex items-center gap-2 text-sm text-gray-300 hover:text-cyan-300 transition-colors"
             >
               <Mail className="w-4 h-4" />
-              brilliantshopifydev@gmail.com
+              arthurparadizi77825@gmail.com
             </a>
 
             <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-gray-500">
