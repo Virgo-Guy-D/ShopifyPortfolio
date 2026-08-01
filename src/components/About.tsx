@@ -1,13 +1,14 @@
-import { motion, useInView } from 'framer-motion';
-import { useRef, useState } from 'react';
+import { animate, motion, useInView, useMotionValue, useReducedMotion, useTransform } from 'framer-motion';
+import { useEffect, useRef, useState } from 'react';
 import { TrendingUp, Code2, Users, Zap, Award, Clock, CheckCircle, Handshake, Sparkles } from 'lucide-react';
 import SectionBackground from './SectionBackground';
 import GradientBadge from './GradientBadge';
 
+// Split into number and suffix so the number can be counted up on first view.
 const stats = [
-  { value: '8+', label: 'Years Experience', icon: '🚀' },
-  { value: '150+', label: 'Projects Completed', icon: '💼' },
-  { value: '100%', label: 'Client Satisfaction', icon: '⭐' },
+  { value: 8, suffix: '+', label: 'Years Experience', icon: '🚀' },
+  { value: 150, suffix: '+', label: 'Projects Completed', icon: '💼' },
+  { value: 100, suffix: '%', label: 'Client Satisfaction', icon: '⭐' },
 ];
 
 const qualities = [
@@ -259,9 +260,65 @@ const ProfilePhoto = () => {
   );
 };
 
+/**
+ * Counts up from zero to `to` the first time the stats scroll into view.
+ *
+ * The running figure lives in a MotionValue rather than component state:
+ * framer-motion writes it straight to the DOM node, so a second of counting at
+ * sixty frames costs no React re-renders — and none of the surrounding section
+ * re-renders either.
+ */
+const CountUp = ({
+  to,
+  suffix,
+  start,
+  duration = 1.8,
+}: {
+  to: number;
+  suffix: string;
+  start: boolean;
+  duration?: number;
+}) => {
+  const count = useMotionValue(0);
+  const display = useTransform(count, (latest) => String(Math.round(latest)));
+  const prefersReducedMotion = useReducedMotion();
+
+  useEffect(() => {
+    if (!start) return;
+    // The count is decorative; anyone who has asked for less motion gets the
+    // finished figure with no journey to it.
+    if (prefersReducedMotion) {
+      count.set(to);
+      return;
+    }
+    // Every card shares this duration, so 8 and 150 land together rather than
+    // the small number finishing early and sitting still.
+    const controls = animate(count, to, { duration, ease: 'easeOut' });
+    return () => controls.stop();
+  }, [start, to, duration, count, prefersReducedMotion]);
+
+  return (
+    <>
+      {/* One stable figure for screen readers — a number changing sixty times a
+          second is noise to announce. */}
+      <span className="sr-only">{`${to}${suffix}`}</span>
+      <span aria-hidden="true">
+        <motion.span>{display}</motion.span>
+        {suffix}
+      </span>
+    </>
+  );
+};
+
 export default function About() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-100px' });
+
+  // Tracked separately from the section header: the stats sit far below it, so
+  // keying off `isInView` would run the count while they were still off screen
+  // and leave a static number to scroll down to.
+  const statsRef = useRef(null);
+  const statsInView = useInView(statsRef, { once: true, margin: '-80px' });
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -431,12 +488,13 @@ export default function About() {
 
         {/* Stats */}
         <motion.div
+          ref={statsRef}
           variants={containerVariants}
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
           className="grid grid-cols-3 gap-6 mt-12"
         >
-          {stats.map(({ value, label, icon }, index) => (
+          {stats.map(({ value, suffix, label, icon }, index) => (
             <TraceBorderCard key={label} className="rounded-xl" color={['cyan', 'purple', 'pink'][index]}>
               <div className="text-center p-6 bg-gray-900/80 rounded-xl h-full">
                 <motion.div 
@@ -446,7 +504,9 @@ export default function About() {
                 >
                   {icon}
                 </motion.div>
-                <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-cyan-300 to-purple-300 bg-clip-text text-transparent mb-1">{value}</div>
+                <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-cyan-300 to-purple-300 bg-clip-text text-transparent mb-1 tabular-nums">
+                  <CountUp to={value} suffix={suffix} start={statsInView} />
+                </div>
                 <div className="text-sm text-gray-400">{label}</div>
               </div>
             </TraceBorderCard>
