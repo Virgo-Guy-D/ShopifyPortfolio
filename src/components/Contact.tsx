@@ -1,11 +1,14 @@
 import { motion, useInView } from 'framer-motion';
 import { useRef, useState } from 'react';
-import { Mail, Phone, MapPin, Send, Github, Linkedin, Twitter, CheckCircle, Loader2, Sparkles } from 'lucide-react';
+import { Mail, Phone, MapPin, Send, Github, Linkedin, Twitter, CheckCircle, Loader2, Sparkles, AlertCircle } from 'lucide-react';
 import SectionBackground from './SectionBackground';
 import GradientBadge from './GradientBadge';
 
+/** Where form submissions and mailto: links land. */
+const CONTACT_EMAIL = 'brilliantshopifydev@gmail.com';
+
 const contactInfo = [
-  { icon: Mail, label: 'Email', value: 'brilliantshopifydev@gmail.com', href: 'mailto:aurtherparadizi@gmail.com' },
+  { icon: Mail, label: 'Email', value: CONTACT_EMAIL, href: `mailto:${CONTACT_EMAIL}` },
   { icon: Phone, label: 'Phone', value: '+55 31 9 8699-2900', href: 'tel:+5531986992900' },
   { icon: MapPin, label: 'Location', value: 'Belo Horizonte, MG, Brazil', href: '#' },
 ];
@@ -22,15 +25,67 @@ export default function Contact() {
   const [formState, setFormState] = useState({ name: '', email: '', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  // Bots fill every field they find; humans never see this one.
+  const [honeypot, setHoneypot] = useState('');
+
+  /** Last resort when the API can't deliver — the message is never dropped. */
+  const openMailClient = () => {
+    const subject = encodeURIComponent(`Portfolio enquiry from ${formState.name}`);
+    const body = encodeURIComponent(`${formState.message}\n\n— ${formState.name} (${formState.email})`);
+    window.location.href = `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
+
+    // Silently accept and discard: telling a bot it failed invites a retry.
+    if (honeypot) {
+      setIsSubmitted(true);
+      setFormState({ name: '', email: '', message: '' });
+      return;
+    }
+
     setIsSubmitting(true);
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    setIsSubmitting(false);
-    setIsSubmitted(true);
-    setFormState({ name: '', email: '', message: '' });
-    setTimeout(() => setIsSubmitted(false), 3000);
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+          name: formState.name,
+          email: formState.email,
+          message: formState.message,
+          // Sent as well as checked above: a bot posting straight to the API
+          // never runs the check on this side.
+          company_website: honeypot,
+        }),
+      });
+      const result = await response.json().catch(() => ({}));
+
+      // The server is up but has no mail transport configured. Hand the message
+      // to the visitor's own mail client rather than claiming it was delivered.
+      if (response.status === 503 && result.code === 'not_configured') {
+        openMailClient();
+        return;
+      }
+
+      if (!response.ok) {
+        // Rate limits and validation come back with a reason worth showing;
+        // anything else gets the generic fallback.
+        setError(result.error ?? `Sorry — that didn't send. Please email me directly at ${CONTACT_EMAIL}.`);
+        return;
+      }
+
+      setIsSubmitted(true);
+      setFormState({ name: '', email: '', message: '' });
+      setTimeout(() => setIsSubmitted(false), 5000);
+    } catch {
+      // Network-level failure — the API is unreachable, so nothing was sent.
+      setError(`Sorry — that didn't send. Please email me directly at ${CONTACT_EMAIL}.`);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -204,6 +259,17 @@ export default function Contact() {
                 </motion.div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-5">
+                  {/* Honeypot — hidden from people and screen readers alike. */}
+                  <input
+                    type="text"
+                    name="company_website"
+                    value={honeypot}
+                    onChange={(e) => setHoneypot(e.target.value)}
+                    tabIndex={-1}
+                    autoComplete="off"
+                    aria-hidden="true"
+                    className="hidden"
+                  />
                   {[
                     { id: 'name', label: 'Your Name', type: 'text', placeholder: 'John Doe' },
                     { id: 'email', label: 'Email Address', type: 'email', placeholder: 'john@example.com' },
@@ -242,6 +308,17 @@ export default function Contact() {
                       placeholder="Tell me about your project..."
                     />
                   </motion.div>
+                  {error && (
+                    <motion.div
+                      role="alert"
+                      initial={{ opacity: 0, y: -8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="flex items-start gap-3 px-4 py-3 bg-red-500/10 border border-red-500/40 rounded-xl"
+                    >
+                      <AlertCircle className="w-5 h-5 shrink-0 text-red-400 mt-0.5" />
+                      <p className="text-sm text-red-200">{error}</p>
+                    </motion.div>
+                  )}
                   <motion.button
                     type="submit"
                     disabled={isSubmitting}

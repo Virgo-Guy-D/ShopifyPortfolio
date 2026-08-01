@@ -407,14 +407,15 @@ export default function Projects() {
 
         {/* Featured Project Detail */}
         <div className="relative">
-          {/* Gradient border that travels continuously around the panel. The
-              two-layer mask paints only the 1.5px rim, leaving the middle
-              transparent so the section background still shows through the
-              panel's own translucent fill. Sits outside the keyed div below so
-              switching projects doesn't restart the travel. */}
+          {/* Gradient border that drifts slowly around the panel. The two-layer
+              mask paints only the 1.5px rim, leaving the middle transparent so
+              the section background still shows through the panel's own
+              translucent fill. Sits outside the keyed div below so switching
+              projects doesn't restart the travel. Kept slow and semi-opaque so
+              it reads as an accent rather than competing with the content. */}
           <motion.div
             aria-hidden
-            className="pointer-events-none absolute -inset-px rounded-2xl p-[1.5px]"
+            className="pointer-events-none absolute -inset-px rounded-2xl p-[1.5px] opacity-60"
             style={{
               background: 'linear-gradient(90deg, #22d3ee, #a78bfa, #f472b6, #22d3ee)',
               backgroundSize: '300% 100%',
@@ -424,7 +425,7 @@ export default function Projects() {
               maskComposite: 'exclude',
             }}
             animate={{ backgroundPosition: ['0% 50%', '300% 50%'] }}
-            transition={{ duration: 6, repeat: Infinity, ease: 'linear' }}
+            transition={{ duration: 14, repeat: Infinity, ease: 'linear' }}
           />
 
           <motion.div

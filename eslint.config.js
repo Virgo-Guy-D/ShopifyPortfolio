@@ -20,4 +20,17 @@ export default defineConfig([
       globals: globals.browser,
     },
   },
+  {
+    // The API runs on Node, not in the browser. It also needs the underscore
+    // convention for deliberately unused parameters: Express identifies an error
+    // handler by its four-parameter shape, so the trailing `next` has to stay
+    // even though nothing calls it.
+    files: ['server/**/*.ts'],
+    languageOptions: {
+      globals: globals.node,
+    },
+    rules: {
+      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+    },
+  },
 ])
