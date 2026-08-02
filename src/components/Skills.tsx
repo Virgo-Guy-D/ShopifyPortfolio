@@ -270,7 +270,15 @@ export default function Skills() {
               <TraceBorderCard key={skill.name} className="rounded-xl">
                 <div className="h-full flex flex-col bg-gray-900/80 p-5 rounded-xl">
                   <div className="flex items-start justify-between gap-3 mb-3">
-                    <span className="font-medium text-gray-300 min-w-0">{skill.name}</span>
+                    {/* text-sm is the largest size at which every skill name fits
+                        the ~201px a card leaves at the 3-column breakpoint — the
+                        longest, "Conversion Rate Optimization", measures 196px
+                        here and 224px at the previous 16px. `truncate` is the
+                        backstop: it keeps the row to one line with an ellipsis
+                        rather than wrapping if a longer name is ever added. */}
+                    <span className="min-w-0 truncate text-sm font-medium text-gray-300" title={skill.name}>
+                      {skill.name}
+                    </span>
                     <motion.span
                       className="shrink-0 text-sm font-bold text-cyan-300"
                       initial={{ scale: 0 }}
