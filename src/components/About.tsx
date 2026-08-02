@@ -7,6 +7,7 @@ import {
   useTransform,
   useVelocity,
   type MotionValue,
+  type Variants,
 } from 'framer-motion';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { TrendingUp, Code2, Users, Zap, Award, Clock, CheckCircle, Handshake, Sparkles } from 'lucide-react';
@@ -33,6 +34,24 @@ const badges = [
   { icon: CheckCircle, text: 'Quality Assured' },
   { icon: Handshake, text: 'Long-term Support' },
 ];
+
+/**
+ * Entrance for the achievement rows.
+ *
+ * The stagger delay lives inside the variant rather than on the element,
+ * because an element-level `transition` also governs `whileHover` — so the
+ * bottom row used to sit still for 1.1s after the pointer arrived before it
+ * began to move. Hover timing is set on the element instead, and the two never
+ * share a curve again.
+ */
+const achievementVariants: Variants = {
+  hidden: { opacity: 0, x: -20 },
+  visible: (i: number) => ({
+    opacity: 1,
+    x: 0,
+    transition: { duration: 0.5, delay: 0.8 + i * 0.1, ease: 'easeOut' },
+  }),
+};
 
 const codeSnippet = `const developer = {
   name: "Arthur Paradizi",
@@ -555,16 +574,26 @@ export default function About() {
                   'Optimized checkout flows resulting in 25% reduction in cart abandonment',
                   'Created reusable component libraries for rapid store deployment'
                 ].map((item, i) => (
-                  <motion.li 
-                    key={i} 
-                    className="flex items-start gap-3 text-gray-300"
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={isInView ? { opacity: 1, x: 0 } : {}}
-                    transition={{ delay: 0.8 + i * 0.1 }}
-                    whileHover={{ x: 5, color: '#22d3ee' }}
+                  // Hover changes two things: the text colour, and the position of
+                  // the row (icon included). Both in CSS rather than
+                  // framer-motion — Tailwind v4 emits oklch, which the browser
+                  // blends natively, and the shift has to stay off the <li>, whose
+                  // transform framer-motion owns for the entrance slide. Sharing
+                  // that node makes hover in and out travel through the entrance's
+                  // delayed curve, which strands the row in its shifted position
+                  // once the pointer leaves. Hence the inner wrapper.
+                  <motion.li
+                    key={i}
+                    custom={i}
+                    variants={achievementVariants}
+                    initial="hidden"
+                    animate={isInView ? 'visible' : 'hidden'}
+                    className="group text-gray-300 transition-colors duration-300 ease-out hover:text-cyan-300"
                   >
-                    <CheckCircle className="w-5 h-5 text-cyan-300 flex-shrink-0 mt-0.5" />
-                    <span>{item}</span>
+                    <div className="flex items-start gap-3 transition-transform duration-300 ease-out group-hover:translate-x-1.5">
+                      <CheckCircle className="w-5 h-5 text-cyan-300 flex-shrink-0 mt-0.5" />
+                      <span>{item}</span>
+                    </div>
                   </motion.li>
                 ))}
               </ul>
