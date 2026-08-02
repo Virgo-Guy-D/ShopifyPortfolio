@@ -1,5 +1,14 @@
-import { animate, motion, useInView, useMotionValue, useReducedMotion, useTransform } from 'framer-motion';
-import { useEffect, useRef, useState } from 'react';
+import {
+  animate,
+  motion,
+  useInView,
+  useMotionValue,
+  useReducedMotion,
+  useTransform,
+  useVelocity,
+  type MotionValue,
+} from 'framer-motion';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { TrendingUp, Code2, Users, Zap, Award, Clock, CheckCircle, Handshake, Sparkles } from 'lucide-react';
 import SectionBackground from './SectionBackground';
 import GradientBadge from './GradientBadge';
@@ -260,19 +269,110 @@ const ProfilePhoto = () => {
   );
 };
 
+// Each column is 0-9 with a repeated 0 on the end, so rolling past 9 lands on a
+// visually identical 0 and the strip can wrap without a jump.
+const DIGIT_ROWS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
+
+// One text row. Digits are comfortably inside this, and every strip shares it so
+// the columns stay in register.
+const ROW = 1.15;
+
 /**
- * Counts up from zero to `to` the first time the stats scroll into view.
+ * Where the column for `place` should sit, in digit units, for value `v`.
  *
- * The running figure lives in a MotionValue rather than component state:
- * framer-motion writes it straight to the DOM node, so a second of counting at
- * sixty frames costs no React re-renders — and none of the surrounding section
- * re-renders either.
+ * The ones column tracks the value continuously, so it glides rather than
+ * stepping — that is the whole point of the odometer, since rendering
+ * `Math.round()` gives a target of 8 only nine states to pass through and no
+ * easing can hide nine discrete jumps.
+ *
+ * Every column above it holds its digit and turns only while the column below
+ * wraps 9→0. Rolling those continuously as well looks smooth but reads wrong: at
+ * 150 the hundreds column would come to rest halfway between 1 and 2.
+ */
+const columnPosition = (v: number, place: number) => {
+  const scaled = v / place;
+  const digit = Math.floor(scaled) % 10;
+  const fraction = scaled - Math.floor(scaled);
+  if (place === 1) return digit + fraction;
+  // The column below spans the last tenth of this one's unit — 190→200 for the
+  // hundreds — so that is exactly the window this column turns in.
+  const CARRY = 0.9;
+  return fraction <= CARRY ? digit : digit + (fraction - CARRY) / (1 - CARRY);
+};
+
+/** A single rolling column of the odometer. */
+const DigitColumn = ({
+  count,
+  place,
+  index,
+  columns,
+}: {
+  count: MotionValue<number>;
+  place: number;
+  index: number;
+  columns: number;
+}) => {
+  const position = useTransform(count, (v) => columnPosition(v, place));
+  const y = useTransform(position, (p) => `${-p * ROW}em`);
+
+  // A fast column streaks rather than strobing: at full tilt the ones digit
+  // passes ~75 values a second, well past what the eye or the display can
+  // resolve. The blur scales with speed and clears as the count settles.
+  const velocity = useVelocity(position);
+  const filter = useTransform(velocity, (v) => `blur(${Math.min(Math.abs(v) * 0.05, 2.5)}px)`);
+
+  // A leading zero isn't part of the number yet. Fading those columns in as the
+  // count reaches their place reads like a counter gaining a digit, and because
+  // the column keeps its width nothing reflows when it appears. The ones column
+  // is exempt: it is always part of the number, including while the number is 0.
+  const leadingOpacity = useTransform(count, [place * 0.8, place], [0, 1], { clamp: true });
+  const opacity = place === 1 ? 1 : leadingOpacity;
+
+  return (
+    <span className="inline-block overflow-hidden" style={{ height: `${ROW}em` }}>
+      <motion.span
+        className="flex flex-col"
+        style={{
+          y,
+          filter,
+          opacity,
+          // The gradient has to live on this element rather than being inherited
+          // from the stat line: a transformed descendant does not contribute its
+          // glyphs to an ancestor's `background-clip: text`, so every column that
+          // had rolled off zero painted as nothing at all. Each column carries
+          // the slice of the sweep belonging to its position, so the digits still
+          // read as one gradient across the number.
+          backgroundImage: 'linear-gradient(to right, var(--color-cyan-300), var(--color-purple-300))',
+          backgroundSize: `${columns * 100}% 100%`,
+          backgroundPosition: columns > 1 ? `${(index / (columns - 1)) * 100}% 0` : '0 0',
+          backgroundClip: 'text',
+          WebkitBackgroundClip: 'text',
+          color: 'transparent',
+        }}
+      >
+        {DIGIT_ROWS.map((digit, i) => (
+          <span key={i} style={{ height: `${ROW}em`, lineHeight: `${ROW}em` }}>
+            {digit}
+          </span>
+        ))}
+      </motion.span>
+    </span>
+  );
+};
+
+/**
+ * Counts up from zero to `to` the first time the stats scroll into view,
+ * rendered as rolling digit columns.
+ *
+ * One MotionValue drives every column. framer-motion writes the transforms
+ * straight to the DOM, so a full run costs no React re-renders — not here, and
+ * not in the section around it.
  */
 const CountUp = ({
   to,
   suffix,
   start,
-  duration = 1.8,
+  duration = 2.2,
 }: {
   to: number;
   suffix: string;
@@ -280,8 +380,15 @@ const CountUp = ({
   duration?: number;
 }) => {
   const count = useMotionValue(0);
-  const display = useTransform(count, (latest) => String(Math.round(latest)));
   const prefersReducedMotion = useReducedMotion();
+
+  // Decimal places the final figure needs, most significant first: 8 → [1],
+  // 150 → [100, 10, 1].
+  const places = useMemo(() => {
+    const result: number[] = [];
+    for (let place = 1; place <= to; place *= 10) result.unshift(place);
+    return result.length ? result : [1];
+  }, [to]);
 
   useEffect(() => {
     if (!start) return;
@@ -292,21 +399,24 @@ const CountUp = ({
       return;
     }
     // Every card shares this duration, so 8 and 150 land together rather than
-    // the small number finishing early and sitting still.
-    const controls = animate(count, to, { duration, ease: 'easeOut' });
+    // the small number finishing early and sitting still. The curve is a cubic
+    // ease-out: quick off the mark, then a long settle into the final figure.
+    const controls = animate(count, to, { duration, ease: [0.33, 1, 0.68, 1] });
     return () => controls.stop();
   }, [start, to, duration, count, prefersReducedMotion]);
 
   return (
-    <>
+    <span className="inline-flex items-center">
       {/* One stable figure for screen readers — a number changing sixty times a
-          second is noise to announce. */}
+          second is noise to announce, and the strips read as gibberish. */}
       <span className="sr-only">{`${to}${suffix}`}</span>
-      <span aria-hidden="true">
-        <motion.span>{display}</motion.span>
+      <span aria-hidden="true" className="inline-flex">
+        {places.map((place, i) => (
+          <DigitColumn key={place} count={count} place={place} index={i} columns={places.length} />
+        ))}
         {suffix}
       </span>
-    </>
+    </span>
   );
 };
 
