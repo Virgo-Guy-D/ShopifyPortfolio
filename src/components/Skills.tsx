@@ -268,7 +268,7 @@ export default function Skills() {
             const colors = colorClasses[activeColor];
             return (
               <TraceBorderCard key={skill.name} className="rounded-xl">
-                <div className="h-full flex flex-col bg-gray-900/80 p-5 rounded-xl">
+                <div className="h-full flex flex-col bg-gray-900/80 p-4 rounded-xl">
                   <div className="flex items-start justify-between gap-3 mb-3">
                     {/* text-sm is the largest size at which every skill name fits
                         the ~201px a card leaves at the 3-column breakpoint — the
@@ -288,7 +288,7 @@ export default function Skills() {
                       {skill.level}%
                     </motion.span>
                   </div>
-                  <div className="mt-auto h-2.5 bg-gray-800 rounded-full overflow-hidden">
+                  <div className="mt-auto h-2 bg-gray-800 rounded-full overflow-hidden">
                     <motion.div
                       initial={{ width: 0 }}
                       animate={{ width: `${skill.level}%` }}
