@@ -22,9 +22,14 @@ configure. To run them separately, use `npm run dev:web` and `npm run dev:api`.
 
 ## Contact form
 
-The form in the Contact section posts to `POST /api/contact` on the bundled
-Express server ([server/](server/)), which sends the message on to
+The form in the Contact section posts to `POST /api/contact`, handled by the
+Express app in [server/](server/), which sends the message on to
 `arthurparadizi77825@gmail.com` via [Resend](https://resend.com).
+
+The routes are defined once in [server/app.ts](server/app.ts) and run two ways:
+locally (and on any Node host) [server/index.ts](server/index.ts) listens on a
+port and also serves `dist/`; on Vercel the thin entrypoints in [api/](api/)
+export the same app as serverless functions while the CDN serves the site.
 
 The API key lives on the server and is never bundled into the browser build.
 
@@ -62,12 +67,50 @@ to Resend count against that quota, so a visitor who mistypes their email is nev
 locked out over a submission that was never sent. `GET /api/health` reports whether
 email is configured and where it delivers.
 
-## Deploying
+## Deploying to Vercel
 
-`npm run build` produces `dist/`, and `npm start` runs a single Node process that
-serves both `dist/` and the API — so the whole site deploys as one app to anywhere
-that runs Node (Railway, Render, Fly.io, a VPS). Set `RESEND_API_KEY` in the host's
-environment, and `PORT` if the host does not inject one.
+The repo is already configured — [vercel.json](vercel.json) sets the Vite build,
+and [api/](api/) holds the serverless entrypoints. Nothing needs building or
+uploading by hand.
+
+1. Push to GitHub.
+2. At <https://vercel.com/new>, import the repository. Leave the detected
+   settings alone: framework Vite, build `npm run build`, output `dist`.
+3. Before the first deploy, open **Environment Variables** and add
+   `RESEND_API_KEY` with the key from your Resend dashboard. Apply it to
+   Production, Preview and Development. This is the step that is easy to skip —
+   without it the deployed form silently falls back to `mailto:`.
+4. Deploy. The site is then live on `your-project.vercel.app`, and every push to
+   `main` redeploys it.
+5. Check `https://your-project.vercel.app/api/health`. It should report
+   `"emailConfigured": true`. If it reports `false`, the environment variable did
+   not reach the deployment — add it and redeploy (changing it does not
+   retroactively apply to an existing build).
+
+`.env` is gitignored and never travels with the repo, which is why the key has to
+be set in Vercel separately.
+
+### What differs in that environment
+
+**The rate limit gets leakier.** Serverless instances do not share memory, so the
+5-per-hour cap is per warm instance rather than per IP globally. It still blunts
+casual form-spam; making it exact needs a shared store such as Vercel KV. The
+honeypot and validation are unaffected.
+
+**A `*.vercel.app` subdomain does not get you a verified sender.** Resend needs
+DNS control over the domain, which a Vercel subdomain does not give you, so mail
+keeps going out from `onboarding@resend.dev` — and therefore keeps being
+deliverable only to the address that owns the Resend account. That is fine while
+you are the only recipient. Buying a domain is what unlocks `CONTACT_FROM`,
+better deliverability, and any mail to the visitor.
+
+### Deploying to a plain Node host instead
+
+`npm run build` produces `dist/`, and `npm start` runs a single process serving
+both `dist/` and the API, so the whole site also deploys as one app to anywhere
+that runs Node (Render, Fly.io, a VPS). Set `RESEND_API_KEY` in the host's
+environment, and `PORT` if the host does not inject one. The `api/` directory is
+simply unused there.
 
 ---
 

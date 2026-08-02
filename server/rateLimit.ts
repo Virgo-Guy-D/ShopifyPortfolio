@@ -23,10 +23,17 @@ declare global {
  * who mistypes their email a few times gets locked out for an hour without a
  * single message ever having been sent.
  *
- * In-memory is the right trade for a single-process portfolio server: no Redis
- * to run, and a restart clearing the counters is harmless. It does mean limits
- * are per-process — if this ever runs multiple instances behind a load balancer,
- * swap in a shared store.
+ * In-memory is the right trade for a portfolio: no Redis to run, no cost, and a
+ * restart clearing the counters is harmless.
+ *
+ * Be clear about what that buys on Vercel, though. Serverless instances do not
+ * share memory, so the quota is per warm instance rather than per IP globally:
+ * a burst that lands on one instance is blunted, but an attacker spread across
+ * several gets the allowance several times over. That is acceptable here — the
+ * cap exists to stop casual form-spam running up the Resend quota, and the
+ * honeypot and validation still apply to every request regardless. Making it
+ * exact means a shared store (Vercel KV / Upstash), which is a deliberate
+ * upgrade, not something to assume.
  */
 export function rateLimit({ windowMs, max }: { windowMs: number; max: number }): RequestHandler {
   const hits = new Map<string, Window>();

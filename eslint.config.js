@@ -25,7 +25,7 @@ export default defineConfig([
     // convention for deliberately unused parameters: Express identifies an error
     // handler by its four-parameter shape, so the trailing `next` has to stay
     // even though nothing calls it.
-    files: ['server/**/*.ts'],
+    files: ['server/**/*.ts', 'api/**/*.ts'],
     languageOptions: {
       globals: globals.node,
     },
