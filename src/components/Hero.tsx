@@ -420,25 +420,35 @@ const StatusBadge = ({ onClickEffect }: { onClickEffect: (e: React.MouseEvent) =
       transition={{ duration: 0.6, type: 'spring', bounce: 0.5 }}
     >
       <MovingBorderCard className="rounded-full inline-block">
+        {/* The moving border only paints on hover, so at rest the pill needs its
+            own rim and ambient glow — otherwise it reads as flat dark-on-dark. */}
         <motion.div
-          className="flex items-center gap-2 px-5 py-2.5 bg-gray-900/90 rounded-full backdrop-blur-sm cursor-pointer select-none"
+          className="flex items-center gap-2.5 px-5 py-2.5 bg-[#0b1220] rounded-full cursor-pointer select-none ring-1 ring-cyan-400/70"
+          style={{ boxShadow: '0 0 18px rgba(34, 211, 238, 0.22)' }}
           whileTap={{ scale: 0.95 }}
           onClick={onClickEffect}
         >
           <span className="relative flex h-2.5 w-2.5">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-300 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-cyan-300"></span>
+            <span
+              className="relative inline-flex rounded-full h-2.5 w-2.5 bg-cyan-200"
+              style={{ boxShadow: '0 0 8px #22d3ee, 0 0 16px rgba(34, 211, 238, 0.85)' }}
+            ></span>
           </span>
-          <motion.span 
-            className="text-cyan-200 text-sm font-semibold"
-            animate={{ 
+          {/* Legibility over sparkle: the glow is a tight, low-alpha lift that
+              separates the text from the pill. A wide halo (the previous 26px)
+              bleeds across the glyph edges and reads blurrier, not brighter — so
+              contrast does the work and the pulse only breathes. */}
+          <motion.span
+            className="text-cyan-300 text-sm font-semibold tracking-wide"
+            animate={{
               textShadow: [
-                '0 0 10px rgba(34, 211, 238, 0.5)',
-                '0 0 20px rgba(34, 211, 238, 0.8)',
-                '0 0 10px rgba(34, 211, 238, 0.5)',
+                '0 0 6px rgba(34, 211, 238, 0.45)',
+                '0 0 10px rgba(34, 211, 238, 0.65)',
+                '0 0 6px rgba(34, 211, 238, 0.45)',
               ]
             }}
-            transition={{ duration: 2, repeat: Infinity }}
+            transition={{ duration: 2.4, repeat: Infinity }}
           >
             Available for new opportunities
           </motion.span>

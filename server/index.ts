@@ -1,8 +1,8 @@
 import { existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
-import { createApp } from './app';
-import { HOST, PORT, RESEND_API_KEY } from './config';
+import { createApp } from './app.js';
+import { HOST, PORT, RESEND_API_KEY } from './config.js';
 
 /**
  * Standalone server: one Node process serving both the API and the built site.

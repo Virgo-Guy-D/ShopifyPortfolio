@@ -1,7 +1,7 @@
 import express from 'express';
 import path from 'node:path';
-import { contactRouter } from './contact';
-import { CONTACT_TO, RESEND_API_KEY, isProduction } from './config';
+import { contactRouter } from './contact.js';
+import { CONTACT_TO, RESEND_API_KEY, isProduction } from './config.js';
 
 /**
  * Builds the Express app.

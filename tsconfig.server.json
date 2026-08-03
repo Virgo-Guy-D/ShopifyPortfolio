@@ -3,12 +3,18 @@
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.server.tsbuildinfo",
     "target": "ES2023",
     "lib": ["ES2023"],
-    "module": "ESNext",
+    "module": "NodeNext",
     "types": ["node"],
     "skipLibCheck": true,
 
-    /* Resolved by tsx at run time, which resolves like a bundler. */
-    "moduleResolution": "bundler",
+    /*
+     * Node's own ESM resolution, which is what actually runs this code: Vercel
+     * compiles api/ as Node ESM (package.json is `"type": "module"`), and tsx
+     * follows the same rules locally. "bundler" was the looser fit — it accepts
+     * extensionless relative imports that Node rejects, so `tsc -b` passed on
+     * code the deploy then refused to build.
+     */
+    "moduleResolution": "NodeNext",
     "verbatimModuleSyntax": true,
     "moduleDetection": "force",
     "esModuleInterop": true,

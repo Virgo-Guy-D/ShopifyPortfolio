@@ -1,4 +1,23 @@
 {
+  /*
+   * Solution-style: `tsc -b` builds the three referenced projects below and
+   * compiles nothing itself, so these options do not affect the local build.
+   *
+   * They are here for Vercel. Its function builder type-checks api/*.ts against
+   * whatever it finds in this file and ignores `references` entirely — so with
+   * no `compilerOptions` it fell back to TypeScript's defaults, where `strict`
+   * is off. That silently disabled the discriminated-union narrowing in
+   * server/contact.ts and failed the deploy on code that builds clean locally.
+   * Keep `strict` in step with tsconfig.server.json.
+   */
+  "compilerOptions": {
+    "target": "ES2023",
+    "lib": ["ES2023"],
+    "types": ["node"],
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "strict": true
+  },
   "files": [],
   "references": [
     { "path": "./tsconfig.app.json" },

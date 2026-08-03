@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { Resend } from 'resend';
-import { CONTACT_FROM, CONTACT_TO, RATE_LIMIT_MAX, RESEND_API_KEY } from './config';
-import { rateLimit } from './rateLimit';
+import { CONTACT_FROM, CONTACT_TO, RATE_LIMIT_MAX, RESEND_API_KEY } from './config.js';
+import { rateLimit } from './rateLimit.js';
 
 const resend = RESEND_API_KEY ? new Resend(RESEND_API_KEY) : null;
 
